@@ -33,6 +33,7 @@ use TASoft\Parser\Token\TokenInterface;
 use TASoft\Parser\Tokenizer\PhpExpressionBasedTokenizer;
 use TASoft\Parser\Tokenizer\TokenizerInterface;
 use TASoft\Parser\Tokenizer\Transformer\PhpTokenToObjectTransformer;
+use TASoft\Parser\TokenSet\TokenSet;
 
 abstract class AbstractParser
 {
@@ -93,12 +94,15 @@ abstract class AbstractParser
         try {
             /** @var TokenInterface $token */
             foreach($tokenizer->yieldToken() as $token) {
+                if($this->ignoreToken($token, $options))
+                    continue;
+
                 if($this->tokenMatchExpected($token, $options)) {
                     $this->_expects = NULL;
 
                     $this->parseToken($token, $options);
                 } else {
-                    $e = new UnexpectedTokenException("Unexpected token %s on line %d", 13, NULL, token_name($token->getCode()), $token->getLine());
+                    $e = new UnexpectedTokenException("Unexpected token %s %s on line %d", 13, NULL, token_name($token->getCode()), $token->getContent(), $token->getLine());
                     $e->setToken($token);
                     throw $e;
                 }
@@ -110,6 +114,10 @@ abstract class AbstractParser
             $exception->setParser($this);
             throw $exception;
         }
+    }
+
+    protected function ignoreToken(TokenInterface $token, int $options): bool {
+        return false;
     }
 
     /**
@@ -145,7 +153,7 @@ abstract class AbstractParser
      * @param mixed ...$contents
      */
     protected function setNextExpected(...$contents) {
-        $this->_expects = $contents;
+        ($this->_expects = ($this->_expects ?: new TokenSet()))->addFrom(...$contents);
     }
 
     /**
@@ -157,29 +165,8 @@ abstract class AbstractParser
      */
     protected function tokenMatchExpected(TokenInterface $token, int $options): bool {
         if($expects = $this->_expects) {
-            $comp = $options & self::MATCH_CASE_INSENSITIVE_CONTENT ? 'strcasecmp' : 'strcmp';
-
-            foreach ($expects as $expect) {
-                $code = $expect;
-                $value = $expect;
-                repeat:
-                if(is_callable($expect) && $expect($token, $options))
-                    return true;
-
-                if(is_numeric($code) && $token->getCode() == $expect)
-                    return true;
-
-                if(is_string($value) && $comp($token->getContent(), $expect) == 0)
-                    return true;
-
-                if(is_array($expect)) {
-                    list($code, $value) = $expect;
-                    $expect = NULL;
-                    goto repeat;
-                }
-            }
-
-            return false;
+            /** @var TokenSet $expects */
+            return $expects->tokenIsMember($token);
         }
         return true;
     }
