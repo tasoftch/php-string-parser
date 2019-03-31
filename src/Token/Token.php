@@ -62,4 +62,23 @@ class Token implements TokenInterface
     {
         return $this->line;
     }
+
+    public function __toString()
+    {
+        switch($this->getCode()) {
+            case RawToken::T_CONTROL: $name = "CONTROL"; break;
+            case RawToken::T_UNKNOWN: $name = "UNKNOWN"; break;
+            default:
+                $name = token_name( $this->getCode() ); break;
+        }
+
+        $content = $this->getContent();
+
+        return sprintf("%000d: %-50s %s", $this->getLine(), $name, $content);
+    }
+
+    public function __debugInfo()
+    {
+        return [(string) $this];
+    }
 }

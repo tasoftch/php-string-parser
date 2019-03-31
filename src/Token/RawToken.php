@@ -13,6 +13,7 @@ abstract class RawToken
     const TOKEN_LINE = 2;
 
     const T_UNKNOWN = -1;
+    const T_CONTROL = 100;
 
     public static function getTokenCode($token) {
         if(is_array($token))
@@ -23,7 +24,7 @@ abstract class RawToken
     public static function getTokenContent($token) {
         if(is_array($token))
             return $token[static::TOKEN_CONTENT] ?? NULL;
-        return NULL;
+        return $token;
     }
 
     public static function getTokenLine($token) {
