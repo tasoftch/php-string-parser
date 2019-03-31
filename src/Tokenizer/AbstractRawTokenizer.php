@@ -51,7 +51,7 @@ abstract class AbstractRawTokenizer implements TokenizerInterface
             if($filters = $this->getFilters()) {
                 foreach($filters as $filter) {
                     if(!$filter->shouldParseToken($token))
-                        continue;
+                        continue 2;
                 }
             }
             yield $token;
