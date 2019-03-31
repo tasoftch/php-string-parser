@@ -23,6 +23,6 @@ class PhpTokenToObjectTransformerTest extends TestCase
         $this->assertInstanceOf(TokenInterface::class, $transformer->getTransformedToken([T_VARIABLE, '$variable', 19]));
         $this->assertInstanceOf(TokenInterface::class, $token = $transformer->getTransformedToken("("));
 
-        $this->assertInstanceOf(RawToken::T_CONTROL, $token->getCode());
+        $this->assertEquals(RawToken::T_CONTROL, $token->getCode());
     }
 }
