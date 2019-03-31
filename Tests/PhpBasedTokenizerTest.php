@@ -11,5 +11,13 @@ use PHPUnit\Framework\TestCase;
 
 class PhpBasedTokenizerTest extends TestCase
 {
+    public function testTokenizer() {
+        $php = new PhpBasedTokenizer();
+        $script = "<?php echo 'Hello World!'; ?>";
 
+        $php->setScript($script);
+
+        $this->assertEquals($script, $php->getScript());
+
+    }
 }

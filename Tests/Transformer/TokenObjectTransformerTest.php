@@ -18,7 +18,6 @@ class TokenObjectTransformerTest extends TestCase
     public function testGetTransformedToken()
     {
         $transformer = new TokenObjectTransformer();
-
         $this->assertInstanceOf(TokenInterface::class, $transformer->getTransformedToken([T_STRING, "Test", 23]));
     }
 }
