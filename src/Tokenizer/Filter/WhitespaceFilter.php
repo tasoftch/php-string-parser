@@ -3,10 +3,12 @@
 namespace TASoft\Parser\Tokenizer\Filter;
 
 
+use TASoft\Parser\Token\TokenInterface;
+
 class WhitespaceFilter implements FilterInterface
 {
-    public function shouldParseToken(int $code, ?string $content, int $line): bool
+    public function shouldParseToken(TokenInterface $token): bool
     {
-        return $code == T_WHITESPACE ? false : true;
+        return $token->getCode() == T_WHITESPACE ? false : true;
     }
 }

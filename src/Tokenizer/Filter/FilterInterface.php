@@ -3,7 +3,9 @@
 namespace TASoft\Parser\Tokenizer\Filter;
 
 
+use TASoft\Parser\Token\TokenInterface;
+
 interface FilterInterface
 {
-    public function shouldParseToken(int $code, ?string $content, int $line): bool;
+    public function shouldParseToken(TokenInterface $token): bool;
 }

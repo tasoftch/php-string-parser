@@ -3,11 +3,13 @@
 namespace TASoft\Parser\Tokenizer\Filter;
 
 
+use TASoft\Parser\Token\TokenInterface;
+
 class IrelevantTokenCodesFilter implements FilterInterface
 {
-    public function shouldParseToken(int $code, ?string $content, int $line): bool
+    public function shouldParseToken(TokenInterface $token): bool
     {
-        return !in_array($code, [
+        return !in_array($token->getCode(), [
             T_COMMENT,
             T_DOC_COMMENT,
             T_WHITESPACE,
