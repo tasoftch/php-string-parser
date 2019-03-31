@@ -1,0 +1,19 @@
+{
+  "name": "tasoft/php-parser",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Thomas Abplanalp",
+      "email": "info@tasoft.ch"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "TASoft\\Parser\\" : "src"
+    }
+  },
+  "require" : {
+    "php": "^7"
+  }
+}
