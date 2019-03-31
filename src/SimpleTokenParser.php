@@ -21,37 +21,35 @@
  * SOFTWARE.
  */
 
-/**
- * PhpBasedTokenizerTest.php
- * php-parser
- *
- * Created on 31.03.19 16:48 by thomas
- */
+namespace TASoft\Parser;
 
-use TASoft\Parser\Tokenizer\Filter\IrelevantTokenCodesFilter;
-use TASoft\Parser\Tokenizer\PhpBasedTokenizer;
-use PHPUnit\Framework\TestCase;
-use TASoft\Parser\Tokenizer\Transformer\PhpTokenToObjectTransformer;
 
-class PhpBasedTokenizerTest extends TestCase
+use TASoft\Parser\Token\TokenInterface;
+
+class SimpleTokenParser extends AbstractParser
 {
-    public function testTokenizer() {
-        $php = new PhpBasedTokenizer();
-        $script = "<?php echo 'Hello World!'; ?>";
+    private $tokens;
 
-        $php->setScript($script);
+    protected function parserDidStart()
+    {
+        $this->tokens = [];
+    }
 
-        $this->assertEquals($script, $php->getScript());
+    protected function parseToken(TokenInterface $token, int $options)
+    {
+        $this->tokens[] = $token;
+    }
 
-        $php->setTransformer(new PhpTokenToObjectTransformer());
-        $php->addFilter(new IrelevantTokenCodesFilter());
+    /**
+     * @return mixed
+     */
+    public function getTokens()
+    {
+        return $this->tokens;
+    }
 
-        $php->rewindTokenizer();
-        $codes = [0, 379, 328, 323, 100];
-
-        foreach($php->yieldToken() as $token) {
-            $code = next($codes);
-            $this->assertEquals($code, $token->getCode());
-        }
+    protected function parserDidComplete(bool $success)
+    {
+        return $this->getTokens();
     }
 }
