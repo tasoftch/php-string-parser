@@ -74,7 +74,7 @@ class Token implements TokenInterface
 
         $content = $this->getContent();
 
-        return sprintf("%000d: %-50s %s", $this->getLine(), $name, $content);
+        return sprintf("%000d: %-50s %s", $this->getLine(), "$name(".$this->getCode().")", $content);
     }
 
     public function __debugInfo()
