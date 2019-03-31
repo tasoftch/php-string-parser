@@ -31,7 +31,7 @@ class Token implements TokenInterface
      * @param $token
      * @return TokenInterface
      */
-    public function create($token): TokenInterface {
+    public static function create($token): TokenInterface {
         return new static(
             RawToken::getTokenCode($token),
             RawToken::getTokenContent($token),
