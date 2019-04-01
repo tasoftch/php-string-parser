@@ -42,6 +42,17 @@ abstract class AbstractExpressionParser extends AbstractParser
     /** @var TokenSetInterface|null */
     private $ignoredTokenSet;
 
+    private $expectsOperator = false;
+
+    /**
+     * @return bool
+     */
+    public function getExpectsOperator()
+    {
+        return $this->expectsOperator;
+    }
+
+
     /**
      * @return null|TokenSetInterface
      */
@@ -160,6 +171,7 @@ abstract class AbstractExpressionParser extends AbstractParser
 
     protected function setNextExpectedOperator() {
         if($this->checkExpected()) {
+            $this->expectsOperator = true;
             $this->setNextExpected(function($token) {
                 return $this->isOperator($token);
             });
@@ -168,6 +180,7 @@ abstract class AbstractExpressionParser extends AbstractParser
 
     protected function setNextExpectedOperand() {
         if($this->checkExpected()) {
+            $this->expectsOperator = false;
             $this->setNextExpected(function($token) {
                 if($this->isOperand($token))
                     return true;
