@@ -59,7 +59,10 @@ abstract class AbstractPrecedence implements PrecedenceInterface
     abstract public function getOperatorPrecedence(TokenInterface $operator, int &$precedence, int &$associativity): bool;
 
     private function _getOperatorPrecedence(TokenInterface $operator): int {
-        if(!$this->getOperatorPrecedence($operator, $pre = 0, $ass = 0)) {
+        $pre = 0;
+        $ass = 0;
+
+        if(!$this->getOperatorPrecedence($operator, $pre, $ass)) {
             $e = new UndefinedPrecedenceException("No precedence defined for operation %s", 0, NULL, $operator->getContent());
             $e->setToken($operator);
             throw $e;

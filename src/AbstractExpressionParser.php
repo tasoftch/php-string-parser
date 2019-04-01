@@ -173,7 +173,15 @@ abstract class AbstractExpressionParser extends AbstractParser
         if($this->checkExpected()) {
             $this->expectsOperator = true;
             $this->setNextExpected(function($token) {
-                return $this->isOperator($token);
+                if($this->isOperator($token))
+                    return true;
+                if($this->isEndOfExpression($token))
+                    return true;
+
+                // But accepts also a closing parenthese counter part.
+                if(NULL !== $cb = $this->currentParentheseCounterPart AND $cb($token))
+                    return true;
+                return false;
             });
         }
     }

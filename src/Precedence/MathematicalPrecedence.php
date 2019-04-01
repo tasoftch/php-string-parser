@@ -33,7 +33,8 @@ class MathematicalPrecedence extends AbstractStaticPrecedence
             "/"                 => self::PREC_VERY_HIGH,
             "%"                 => self::PREC_VERY_HIGH,
             "+"                 => self::PREC_HIGH,
-            "-"                 => self::PREC_HIGH
+            "-"                 => self::PREC_HIGH,
+            T_POW               => self::PREC_VERY_HIGH + 1200
         ];
 
         $this->associativities = [
@@ -41,7 +42,8 @@ class MathematicalPrecedence extends AbstractStaticPrecedence
             "/"                 => self::ASSOC_LEFT,
             "%"                 => self::ASSOC_LEFT,
             "+"                 => self::ASSOC_LEFT,
-            "-"                 => self::ASSOC_LEFT
+            "-"                 => self::ASSOC_LEFT,
+            T_POW               => self::ASSOC_LEFT
         ];
     }
 }

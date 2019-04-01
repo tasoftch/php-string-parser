@@ -32,6 +32,8 @@ class ComparisonOperatorSet extends TokenSet
         T_IS_IDENTICAL,
         T_IS_NOT_EQUAL,
         T_IS_NOT_IDENTICAL,
-        T_IS_SMALLER_OR_EQUAL
+        T_IS_SMALLER_OR_EQUAL,
+        ">",
+        "<"
     ];
 }
