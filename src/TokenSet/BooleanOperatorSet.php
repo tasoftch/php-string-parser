@@ -21,9 +21,13 @@
  * SOFTWARE.
  */
 
-namespace TASoft\Parser\Exception;
+namespace TASoft\Parser\TokenSet;
 
 
-class UnexpectedTokenException extends ParserTokenException
+class BooleanOperatorSet extends TokenSet
 {
+    protected $tokens = [
+        T_BOOLEAN_AND,
+        T_BOOLEAN_OR
+    ];
 }

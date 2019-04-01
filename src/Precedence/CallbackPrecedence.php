@@ -21,9 +21,36 @@
  * SOFTWARE.
  */
 
-namespace TASoft\Parser\Exception;
+namespace TASoft\Parser\Precedence;
 
 
-class UnexpectedTokenException extends ParserTokenException
+use TASoft\Parser\Token\TokenInterface;
+
+class CallbackPrecedence extends AbstractPrecedence
 {
+    /** @var callable */
+    private $callback;
+
+    /**
+     * CallbackPrecedence constructor.
+     * @param callable $callback
+     */
+    public function __construct(callable $callback)
+    {
+        $this->callback = $callback;
+    }
+
+
+    public function getOperatorPrecedence(TokenInterface $operator, int &$precedence, int &$associativity): bool
+    {
+        return $this->getCallback()($operator, $precedence, $associativity);
+    }
+
+    /**
+     * @return callable
+     */
+    public function getCallback(): callable
+    {
+        return $this->callback;
+    }
 }

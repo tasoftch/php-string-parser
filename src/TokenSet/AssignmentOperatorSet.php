@@ -21,9 +21,24 @@
  * SOFTWARE.
  */
 
-namespace TASoft\Parser\Exception;
+namespace TASoft\Parser\TokenSet;
 
 
-class UnexpectedTokenException extends ParserTokenException
+class AssignmentOperatorSet extends TokenSet
 {
+    protected $tokens = [
+        "=",
+        T_PLUS_EQUAL,
+        T_MINUS_EQUAL,
+        T_MUL_EQUAL,
+        T_POW_EQUAL,
+        T_DIV_EQUAL,
+        T_CONCAT_EQUAL,
+        T_MOD_EQUAL,
+        T_AND_EQUAL,
+        T_OR_EQUAL,
+        T_XOR_EQUAL,
+        T_SR_EQUAL,
+        T_SL_EQUAL
+    ];
 }

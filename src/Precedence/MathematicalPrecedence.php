@@ -21,9 +21,27 @@
  * SOFTWARE.
  */
 
-namespace TASoft\Parser\Exception;
+namespace TASoft\Parser\Precedence;
 
 
-class UnexpectedTokenException extends ParserTokenException
+class MathematicalPrecedence extends AbstractStaticPrecedence
 {
+    protected function load()
+    {
+        $this->precedences = [
+            "*"                 => self::PREC_VERY_HIGH,
+            "/"                 => self::PREC_VERY_HIGH,
+            "%"                 => self::PREC_VERY_HIGH,
+            "+"                 => self::PREC_HIGH,
+            "-"                 => self::PREC_HIGH
+        ];
+
+        $this->associativities = [
+            "*"                 => self::ASSOC_LEFT,
+            "/"                 => self::ASSOC_LEFT,
+            "%"                 => self::ASSOC_LEFT,
+            "+"                 => self::ASSOC_LEFT,
+            "-"                 => self::ASSOC_LEFT
+        ];
+    }
 }

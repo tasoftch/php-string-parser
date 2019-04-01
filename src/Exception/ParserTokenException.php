@@ -24,6 +24,26 @@
 namespace TASoft\Parser\Exception;
 
 
-class UnexpectedTokenException extends ParserTokenException
+use TASoft\Parser\Token\TokenInterface;
+
+class ParserTokenException extends ParserException
 {
+    /** @var TokenInterface */
+    private $token;
+
+    /**
+     * @return TokenInterface
+     */
+    public function getToken(): TokenInterface
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param TokenInterface $token
+     */
+    public function setToken(TokenInterface $token): void
+    {
+        $this->token = $token;
+    }
 }

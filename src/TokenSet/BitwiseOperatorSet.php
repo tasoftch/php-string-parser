@@ -21,9 +21,16 @@
  * SOFTWARE.
  */
 
-namespace TASoft\Parser\Exception;
+namespace TASoft\Parser\TokenSet;
 
 
-class UnexpectedTokenException extends ParserTokenException
+class BitwiseOperatorSet extends TokenSet
 {
+    protected $tokens = [
+        "&",
+        "^",
+        "|",
+        T_SR,
+        T_SL
+    ];
 }

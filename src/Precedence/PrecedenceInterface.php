@@ -21,9 +21,16 @@
  * SOFTWARE.
  */
 
-namespace TASoft\Parser\Exception;
+namespace TASoft\Parser\Precedence;
 
 
-class UnexpectedTokenException extends ParserTokenException
+use TASoft\Parser\Token\TokenInterface;
+
+interface PrecedenceInterface
 {
+    const PRECEDENCE_LOWER = -1;
+    const PRECEDENCE_EQUAL = 0;
+    const PRECEDENCE_HIGHER = 1;
+
+    public function compareOperators(TokenInterface $leftOperator, TokenInterface $rightOperator): int;
 }

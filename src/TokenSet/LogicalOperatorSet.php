@@ -27,8 +27,6 @@ namespace TASoft\Parser\TokenSet;
 class LogicalOperatorSet extends TokenSet
 {
     protected $tokens = [
-        T_BOOLEAN_OR,
-        T_BOOLEAN_AND,
         T_LOGICAL_AND,
         T_LOGICAL_OR,
         T_LOGICAL_XOR

@@ -24,6 +24,6 @@
 namespace TASoft\Parser\Exception;
 
 
-class UnexpectedTokenException extends ParserTokenException
+class UndefinedPrecedenceException extends ParserTokenException
 {
 }
