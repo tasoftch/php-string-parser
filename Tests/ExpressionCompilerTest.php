@@ -29,7 +29,7 @@
  */
 
 use PHPUnit\Framework\TestCase;
-use TASoft\Parser\AbstractPrecedenceExpressionParser;
+use TASoft\Parser\AbstractExpressionCompiler;
 use TASoft\Parser\Precedence\AbstractStaticPrecedence;
 use TASoft\Parser\Precedence\AssignmentPrecedence;
 use TASoft\Parser\Precedence\BitwisePrecedence;
@@ -50,14 +50,14 @@ use TASoft\Parser\TokenSet\NumberOperandSet;
 use TASoft\Parser\TokenSet\StringOperandSet;
 use TASoft\Parser\TokenSet\StringOperatorSet;
 
-class PrecedenceExpressionTest extends TestCase
+class ExpressionCompilerTest extends TestCase
 {
     private function createParser() {
-        $parser = new class extends AbstractPrecedenceExpressionParser {
+        $parser = new class extends AbstractExpressionCompiler {
             public $operations = [];
             private $pointer = 1;
 
-            protected function parseOperation(TokenInterface $operator, &$leftOperand, &$rightOperand): int
+            protected function compileOperation(TokenInterface $operator, &$leftOperand, &$rightOperand): int
             {
                 if($leftOperand instanceof TokenInterface)
                     $leftOperand = $leftOperand->getContent();
@@ -68,13 +68,19 @@ class PrecedenceExpressionTest extends TestCase
                 $this->operations[] = "$leftOperand" . $operator->getContent() . "$rightOperand => ~$p";
 
                 $leftOperand = "~$p";
-                return AbstractPrecedenceExpressionParser::USE_LEFT_OPERAND;
+                return AbstractExpressionCompiler::USE_LEFT_OPERAND;
             }
 
-            protected function finalizeExpression($finalOperand, ?TokenInterface $token)
+            protected function compileExpression($finalOperand, ?TokenInterface $token)
             {
                 $this->operations[] = $finalOperand;
                 $this->pointer = 1;
+            }
+
+            protected function parserDidStart()
+            {
+                parent::parserDidStart();
+                $this->operations = [];
             }
         };
 
@@ -142,9 +148,17 @@ class PrecedenceExpressionTest extends TestCase
     public function testPrecedence() {
         $parser = $this->createParser();
         $parser->parseString("My = TRUE && FALSE;");
-        print_r($parser->operations);
+        $this->assertEquals(array (
+            0 => 'TRUE&&FALSE => ~1',
+            1 => 'My=~1 => ~2',
+            2 => '~2',
+        ), $parser->operations);
 
         $parser->parseString("My = TRUE AND FALSE;");
-        print_r($parser->operations);
+        $this->assertEquals(array (
+            0 => 'My=TRUE => ~1',
+            1 => '~1ANDFALSE => ~2',
+            2 => '~2',
+        ), $parser->operations);
     }
 }

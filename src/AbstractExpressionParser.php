@@ -155,6 +155,11 @@ abstract class AbstractExpressionParser extends AbstractParser
             }
         }
 
+        if($this->isEndOfExpression($token)) {
+            $this->parseEndOfExpression($token);
+            return;
+        }
+
         if($this->isOperand($token)) {
             $this->setNextExpectedOperator();
             $this->parseOperand($token);

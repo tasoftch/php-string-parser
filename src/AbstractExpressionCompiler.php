@@ -29,7 +29,7 @@ use TASoft\Parser\Exception\ParserException;
 use TASoft\Parser\Precedence\PrecedenceInterface;
 use TASoft\Parser\Token\TokenInterface;
 
-abstract class AbstractPrecedenceExpressionParser extends AbstractExpressionParser
+abstract class AbstractExpressionCompiler extends AbstractExpressionParser
 {
     const USE_LEFT_OPERAND = 1;
     const USE_RIGHT_OPERAND = 2;
@@ -125,7 +125,7 @@ abstract class AbstractPrecedenceExpressionParser extends AbstractExpressionPars
                 array_pop($this->operator_queue);
                 break;
             } else {
-                $this->compileOperation();
+                $this->compileLastOperationInStack();
 
                 if(!$this->operator_queue) {
                     $e = new MissmatchingParentheseException("Missing open parenthese for %s", $token->getContent());
@@ -152,7 +152,7 @@ abstract class AbstractPrecedenceExpressionParser extends AbstractExpressionPars
             if($pre->compareOperators($last, $token) > PrecedenceInterface::PRECEDENCE_EQUAL)
                 break;
 
-            $this->compileOperation();
+            $this->compileLastOperationInStack();
         }
 
         $this->_pushOperator($token, false, true);
@@ -181,7 +181,7 @@ abstract class AbstractPrecedenceExpressionParser extends AbstractExpressionPars
      */
     private function _terminate(?TokenInterface $token) {
         while($this->operator_queue) {
-            $this->compileOperation();
+            $this->compileLastOperationInStack();
         }
 
         $final = array_pop($this->operand_queue);
@@ -189,14 +189,14 @@ abstract class AbstractPrecedenceExpressionParser extends AbstractExpressionPars
             throw new ParserException("Parsing failed because there are still %d object(s) in stack", 0, NULL, $d);
         }
 
-        $this->finalizeExpression($final, $token);
+        $this->compileExpression($final, $token);
         $this->operand_queue = $this->operator_queue = [];
     }
 
     /**
      * Take last operator and last two operands and compile them.
      */
-    protected function compileOperation() {
+    protected function compileLastOperationInStack() {
         /** @var TokenInterface $token */
         list($token, $isParenthese, $isOperation) = array_pop($this->operator_queue);
 
@@ -209,7 +209,7 @@ abstract class AbstractPrecedenceExpressionParser extends AbstractExpressionPars
             $right = array_pop($this->operand_queue);
             $left = array_pop($this->operand_queue);
 
-            $res = $this->parseOperation($token, $left, $right);
+            $res = $this->compileOperation($token, $left, $right);
             if($res & self::USE_LEFT_OPERAND)
                 $this->operand_queue[] = $left;
             if($res & self::USE_RIGHT_OPERAND)
@@ -240,9 +240,9 @@ abstract class AbstractPrecedenceExpressionParser extends AbstractExpressionPars
      * @param $leftOperand
      * @param $rightOperand
      * @return int
-     * @see AbstractPrecedenceExpressionParser::USE_* constants
+     * @see AbstractExpressionCompiler::USE_* constants
      */
-    abstract protected function parseOperation(TokenInterface $operator, &$leftOperand, &$rightOperand): int;
+    abstract protected function compileOperation(TokenInterface $operator, &$leftOperand, &$rightOperand): int;
 
     /**
      * Called when the expression did end.
@@ -252,5 +252,5 @@ abstract class AbstractPrecedenceExpressionParser extends AbstractExpressionPars
      * @param TokenInterface|null $token
      * @return mixed
      */
-    abstract protected function finalizeExpression($finalOperand, ?TokenInterface $token);
+    abstract protected function compileExpression($finalOperand, ?TokenInterface $token);
 }
