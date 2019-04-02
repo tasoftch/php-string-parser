@@ -8,3 +8,10 @@ print_r($parser->parseString("12 + 13 / 6"));
 ````
 This list all parsed tokens.  
 Token parsing is done by php token_get_all function, but you can easy subclass a tokenizer to customize string tokenizing.
+
+## Install
+PHP String Parser is a composer package. So you can simply install it by
+````bin
+$ composer require tasoft/string-parser
+````
+Now the library is available under namespace \TASoft\Parser\...
