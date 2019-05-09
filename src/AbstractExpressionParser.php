@@ -39,8 +39,6 @@ abstract class AbstractExpressionParser extends AbstractParser
     private $operandTokenSet;
     /** @var TokenSetInterface|null */
     private $operatorTokenSet;
-    /** @var TokenSetInterface|null */
-    private $ignoredTokenSet;
 
     private $expectsOperator = false;
 
@@ -52,22 +50,6 @@ abstract class AbstractExpressionParser extends AbstractParser
         return $this->expectsOperator;
     }
 
-
-    /**
-     * @return null|TokenSetInterface
-     */
-    public function getIgnoredTokenSet(): ?TokenSetInterface
-    {
-        return $this->ignoredTokenSet;
-    }
-
-    /**
-     * @param null|TokenSetInterface $ignoredTokenSet
-     */
-    public function setIgnoredTokenSet(?TokenSetInterface $ignoredTokenSet): void
-    {
-        $this->ignoredTokenSet = $ignoredTokenSet;
-    }
 
     /**
      * @return null|TokenSetInterface
@@ -121,11 +103,6 @@ abstract class AbstractExpressionParser extends AbstractParser
     {
         parent::parserDidStart();
         $this->setNextExpectedOperand();
-    }
-
-    protected function ignoreToken(TokenInterface $token, int $options): bool
-    {
-        return ($ts = $this->getIgnoredTokenSet()) ? $ts->tokenIsMember($token) : false;
     }
 
 

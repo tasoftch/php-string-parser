@@ -12,6 +12,9 @@ Token parsing is done by php token_get_all function, but you can easy subclass a
 ## Install
 PHP String Parser is a composer package. So you can simply install it by
 ````bin
-$ composer require tasoft/string-parser
+$ composer require tasoft/php-string-parser
 ````
 Now the library is available under namespace \TASoft\Parser\...
+
+### Examples
+The package tasoft/predicate uses this parser to create predicates from string.

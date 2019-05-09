@@ -34,6 +34,7 @@ use TASoft\Parser\Tokenizer\PhpExpressionBasedTokenizer;
 use TASoft\Parser\Tokenizer\TokenizerInterface;
 use TASoft\Parser\Tokenizer\Transformer\PhpTokenToObjectTransformer;
 use TASoft\Parser\TokenSet\TokenSet;
+use TASoft\Parser\TokenSet\TokenSetInterface;
 
 abstract class AbstractParser
 {
@@ -44,6 +45,25 @@ abstract class AbstractParser
 
     private $errors = [];
     private $_expects;
+
+    /** @var TokenSetInterface|null */
+    private $ignoredTokenSet;
+
+    /**
+     * @return null|TokenSetInterface
+     */
+    public function getIgnoredTokenSet(): ?TokenSetInterface
+    {
+        return $this->ignoredTokenSet;
+    }
+
+    /**
+     * @param null|TokenSetInterface $ignoredTokenSet
+     */
+    public function setIgnoredTokenSet(?TokenSetInterface $ignoredTokenSet): void
+    {
+        $this->ignoredTokenSet = $ignoredTokenSet;
+    }
 
     /**
      * AbstractParser constructor.
@@ -116,8 +136,9 @@ abstract class AbstractParser
         }
     }
 
-    protected function ignoreToken(TokenInterface $token, int $options): bool {
-        return false;
+    protected function ignoreToken(TokenInterface $token, int $options): bool
+    {
+        return ($ts = $this->getIgnoredTokenSet()) ? $ts->tokenIsMember($token) : false;
     }
 
     /**
