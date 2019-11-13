@@ -21,15 +21,24 @@
  * SOFTWARE.
  */
 
-namespace TASoft\Parser\Tokenizer;
+namespace TASoft\Parser\Tokenizer\Adaptor;
 
 
-use TASoft\Parser\Token\TokenInterface;
+use TASoft\Parser\Tokenizer\Filter\FilterInterface;
+use TASoft\Parser\Tokenizer\TokenizerInterface;
+use TASoft\Parser\Tokenizer\Transformer\TokenObjectTransformer;
+use TASoft\Parser\Tokenizer\Transformer\TransformerInterface;
 
-abstract class AbstractTokenStackingTokenizer implements TokenizerInterface
+abstract class AbstractTokenizerAdaptor implements AdaptorInterface
 {
     /** @var TokenizerInterface */
     private $tokenizer;
+
+    /** @var TransformerInterface|null */
+    private $transformer;
+
+    /** @var FilterInterface[] */
+    private $filters = [];
 
     /**
      * AbstractTokenPreparationTokenizer constructor.
@@ -61,12 +70,21 @@ abstract class AbstractTokenStackingTokenizer implements TokenizerInterface
      */
     public function yieldToken(): \Generator
     {
-        $stack = [];
         foreach($this->getTokenizer()->yieldToken() as $token) {
-            if($this->shouldStackToken($token, $stack))
+            $token = $this->adaptNextToken($token);
+            if(!$token)
                 continue;
-            else
+            else {
+                $token = $this->getTransformer()->getTransformedToken($token);
+
+                if($filters = $this->getFilters()) {
+                    foreach($filters as $filter) {
+                        if(!$filter->shouldParseToken($token))
+                            continue 2;
+                    }
+                }
                 yield $token;
+            }
         }
     }
 
@@ -79,13 +97,36 @@ abstract class AbstractTokenStackingTokenizer implements TokenizerInterface
     }
 
     /**
-     * This method decides if the incoming token should be stacked or forwarded.
-     * If it returns true, the tokenizer continues yielding the next token, stacking the current token is up to this method!
-     * If it returns false, the tokenizer forwards the token.
-     *
-     * @param TokenInterface $newToken
-     * @param array $tokenStack
-     * @return bool
+     * @return TransformerInterface
      */
-    abstract protected function shouldStackToken(TokenInterface &$nextToken, array &$tokenStack): bool;
+    public function getTransformer(): TransformerInterface
+    {
+        if($this->transformer === NULL)
+            $this->transformer = new TokenObjectTransformer();
+        return $this->transformer;
+    }
+
+    /**
+     * @param null|TransformerInterface $transformer
+     */
+    public function setTransformer(?TransformerInterface $transformer): void
+    {
+        $this->transformer = $transformer;
+    }
+
+    /**
+     * @return FilterInterface[]
+     */
+    public function getFilters(): array
+    {
+        return $this->filters;
+    }
+
+    /**
+     * @param FilterInterface[] $filters
+     */
+    public function setFilters(array $filters): void
+    {
+        $this->filters = $filters;
+    }
 }
