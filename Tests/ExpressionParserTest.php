@@ -51,6 +51,7 @@ class ExpressionParserTest extends TestCase
      */
     public function testParserInvalidOperand() {
         $parser = new MockParser();
+		$this->expectException(UnexpectedTokenException::class);
         $parser->parseString('1 + 3  5');
     }
 
@@ -59,6 +60,7 @@ class ExpressionParserTest extends TestCase
      */
     public function testParserInvalidOperator() {
         $parser = new MockParser();
+		$this->expectException(UnexpectedTokenException::class);
         $parser->parseString('1 + 3 + / 5');
     }
 }

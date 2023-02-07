@@ -47,11 +47,11 @@ class PhpBasedTokenizerTest extends TestCase
         $php->addFilter(new IrelevantTokenCodesFilter());
 
         $php->rewindTokenizer();
-        $codes = [0, 379, 328, 323, 100];
-
+        $codes = [T_ECHO, T_CONSTANT_ENCAPSED_STRING, 100];
+		$cache = [];
         foreach($php->yieldToken() as $token) {
-            $code = next($codes);
-            $this->assertEquals($code, $token->getCode());
+            $cache[] = $token->getCode();
         }
+		$this->assertEquals($codes, $cache);
     }
 }

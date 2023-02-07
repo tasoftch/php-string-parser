@@ -21,4 +21,3 @@
  * SOFTWARE.
  */
 
-require "../vendor/autoload.php";

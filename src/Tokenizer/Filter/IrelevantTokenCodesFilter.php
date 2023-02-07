@@ -35,7 +35,8 @@ class IrelevantTokenCodesFilter implements FilterInterface
             T_DOC_COMMENT,
             T_WHITESPACE,
             defined('T_BAD_CHARACTER') ? T_BAD_CHARACTER : NULL,
-            T_CLOSE_TAG
+            T_CLOSE_TAG,
+			T_OPEN_TAG
         ]);
     }
 

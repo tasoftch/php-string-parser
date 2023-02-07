@@ -38,11 +38,12 @@ class SimpleTokenParserTest extends TestCase
     public function testParser() {
         $parser = new SimpleTokenParser();
 
-        $codes = [0, 328, 323, 100];
+        $codes = [T_ECHO, T_CONSTANT_ENCAPSED_STRING, 100];
+		$cache = [];
 
         foreach($parser->parseString('echo"Hello World!";') as $token) {
-            $code = next($codes);
-            $this->assertEquals($code, $token->getCode());
+			$cache[] = $token->getCode();
         }
+		$this->assertEquals($codes, $cache);
     }
 }
